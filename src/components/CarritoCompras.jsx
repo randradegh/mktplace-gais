@@ -1,7 +1,6 @@
 import React, { useState, useEffect } from 'react';
 
 const CarritoCompras = ({ cartItems, setCartItems }) => {
-
     const [items, setItems] = useState([]);
 
     useEffect(() => {
@@ -21,31 +20,42 @@ const CarritoCompras = ({ cartItems, setCartItems }) => {
         return Array.from(itemMap.values());
     }
 
-    const handleIncrement = (id) => {
+
+     const handleIncrement = (id) => {
+         console.log("handleIncrement", id)
         setCartItems(prevCartItems => {
-          return  prevCartItems.map(item => {
-                if(item.id === id){
-                   return {...item, quantity: item.quantity + 1 }
-                }
-               return item
-            })
-         });
+            const newCart =  prevCartItems.map(item => {
+              if(item.id === id){
+                 return {...item, quantity: item.quantity + 1}
+               }
+              return item;
+           });
+         return newCart
+      });
     };
 
     const handleDecrement = (id) => {
+       console.log("handleDecrement", id);
         setCartItems(prevCartItems => {
-          return  prevCartItems.map(item => {
-            if(item.id === id){
-                 const newQuantity = item.quantity - 1;
-                 if(newQuantity <= 0){
-                    return null;
-                 }
-                  return {...item, quantity: newQuantity}
+            const itemToUpdate = prevCartItems.find(item => item.id === id);
+              if(itemToUpdate){
+               const newQuantity = itemToUpdate.quantity - 1;
+              if(newQuantity > 0){
+                 return prevCartItems.map(item => {
+                      if(item.id === id){
+                         return {...item, quantity: newQuantity}
+                      }
+                       return item
+                   })
+                }else{
+                     return prevCartItems.filter(item => item.id !== id);
+               }
             }
-             return item
-           }).filter(item => item !== null);
-          });
-    };
+            return prevCartItems;
+         });
+   };
+
+
 
     const calculateProductTotal = (item) => {
         return item.price * item.quantity;
