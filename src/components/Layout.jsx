@@ -4,9 +4,9 @@ import Footer from './Footer';
 
 function Layout({ children }) {
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="w-full"> {/* Eliminamos flex flex-col min-h-screen y agregamos w-full */}
       <Navbar />
-      <main className="flex-1">
+      <main className="flex-1 w-full">
         {children}
       </main>
       <Footer />

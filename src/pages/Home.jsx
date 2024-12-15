@@ -5,7 +5,7 @@ import ProductList from '../components/ProductList';
 function Home() {
   return (
     <Layout>
-      <div className="container mx-auto py-8">
+      <div className="mx-auto py-8 w-full"> {/* Eliminamos la clase container y agregamos w-full */}
         <h1 className="text-2xl font-bold mb-4">Nuestros Productos</h1>
         <ProductList />
       </div>
