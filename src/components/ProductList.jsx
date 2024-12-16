@@ -5,11 +5,14 @@ import { ShoppingCartIcon } from '@heroicons/react/24/solid';
 import CarritoCompras from './CarritoCompras'; // Importa el componente CarritoCompras
 import { XMarkIcon } from '@heroicons/react/24/solid';
 
-function ProductList() {
+
+function ProductList({ isMobileView }) {
     const [products, setProducts] = useState([]);
     const [error, setError] = useState(null);
     const [cart, setCart] = useState([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
+
+
 
     useEffect(() => {
         const fetchProducts = async () => {
@@ -50,6 +53,7 @@ function ProductList() {
         setIsCartOpen(!isCartOpen);
     };
 
+
      const calculateTotalItems = () => {
         return cart.reduce((total, item) => total + item.quantity, 0);
     };
@@ -70,7 +74,7 @@ function ProductList() {
                 </div>
             </div>
             {isCartOpen && (
-                <div className="bg-white p-4 rounded-lg fixed top-20 right-4 z-50 max-w-md max-h-[80vh] overflow-y-auto border border-gray-200 shadow-lg"> {/* Modificado para mover y aumentar la altura del carrito */}
+                <div className="bg-white p-4 rounded-lg fixed top-20 right-4 z-50 max-w-md max-h-[80vh] overflow-y-auto border border-gray-200 shadow-lg">
                     <div className="flex justify-between items-center mb-4">
                       <h2 className="text-lg font-semibold text-gray-800">Carrito de compras</h2>
                       <button onClick={toggleCartModal} className="text-gray-600 hover:text-gray-800">
@@ -80,7 +84,7 @@ function ProductList() {
                     <CarritoCompras cartItems={cart} setCartItems={setCart} />
                 </div>
             )}
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4 p-4 flex-grow w-full">
+            <div className={`grid ${isMobileView ? 'grid-cols-1' : 'grid-cols-3'} auto-rows-fr gap-4 p-4 flex-grow w-full`}>
                 {products.length === 0 ? <p>No hay productos</p> : (
                     products.map((product) => (
                         <ProductCard key={product.id} product={product} onAddToCart={addToCart} />
