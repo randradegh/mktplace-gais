@@ -36,28 +36,32 @@ function OrderList() {
     }
 
     return (
-        <div className="container mx-auto py-8">
-            <header className="mb-6">
-                <h2 className="text-3xl font-bold text-gray-800 mb-2 flex items-center">
+        <div className="bg-cyan-800 container mx-auto py-8">
+            <header className="ml-8 mb-6">
+                <h2 className="text-3xl font-bold text-gray-50 mb-2 flex items-center">
                   <ShoppingBagIcon className='h-8 w-8 mr-2'/>
                  Mis Órdenes
                 </h2>
-                <p className="text-gray-600">Aquí puedes ver el detalle de tus órdenes.</p>
+                <p className="text-gray-50">Aquí puedes ver el detalle de tus órdenes.</p>
             </header>
              {orders.length === 0 ? <p>No tienes órdenes</p> : (
                <ul>
                 {orders.map((order) => (
-                     <li key={order.id} className="bg-white border border-gray-200 rounded-lg shadow-md p-4 mb-4">
-                         <div className='flex items-center mb-2'>
+                     <li key={order.id} className="ml-4 mr-4 bg-white border border-gray-200 rounded-lg shadow-md p-4 mb-4">
+                         <div className="flex items-center mb-2">
                                <h3 className="font-bold text-lg mr-2">Orden #{order.id}</h3>
                                <TagIcon className='h-5 w-5'/>
-                            </div>
-                         <div className='flex items-center mb-1'>
+                         </div>
+                         <div className='bg-cyan-300'>
+                         <div className='flex items-center mb-1 bg-cyan-300'>
                             <UserIcon className='h-5 w-5 mr-1'/>
                             <p>Cliente: {order.users.full_name}</p>
                         </div>
-                        <p className='mb-1 ml-6'>Dirección: {order.users.address}</p>
-                         <p className="text-gray-700">Estado: {order.status}</p>
+                        <div className='bg-cyan-300'>
+                            <p className="bg-cyan-300 mb-1 mr-2 ml-6">Dirección: {order.users.address}</p>
+                            <p className="text-gray-700 mb-1 mr-2 ml-6">Estado: {order.status}</p>
+                        </div>
+                        </div>
                          <p className="text-gray-800 font-semibold mt-2">Total: ${order.total_amount}</p>
                            <h4 className='font-semibold mt-2 mb-1'>Productos:</h4>
                            <ul>
