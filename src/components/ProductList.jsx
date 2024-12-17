@@ -1,53 +1,75 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useContext } from 'react';
 import ProductCard from './ProductCard';
 import { supabase } from '../utils/supabaseClient';
 import { ShoppingCartIcon } from '@heroicons/react/24/solid';
-import CarritoCompras from './CarritoCompras'; // Importa el componente CarritoCompras
+import CarritoCompras from './CarritoCompras';
 import { XMarkIcon } from '@heroicons/react/24/solid';
+import { CartContext } from './CartContext';
 
 
 function ProductList({ isMobileView }) {
     const [products, setProducts] = useState([]);
+    const [categories, setCategories] = useState([]);
+    const [selectedCategory, setSelectedCategory] = useState('all');
+    const [filteredProducts, setFilteredProducts] = useState([]);
     const [error, setError] = useState(null);
-    const [cart, setCart] = useState([]);
     const [isCartOpen, setIsCartOpen] = useState(false);
-
-
+      const { cart } = useContext(CartContext);
 
     useEffect(() => {
         const fetchProducts = async () => {
             try {
                 const { data, error } = await supabase
                     .from('products')
-                    .select('*');
+                    .select('*, categories(name)')
+                     .order('name', { foreignTable: 'categories' });
 
                 if (error) {
                     setError(error);
                     return;
                 }
-                setProducts(data);
+                 const productsWithCategoryName = data.map(product => ({
+                        ...product,
+                        category: product.categories.name
+                    }));
+                setProducts(productsWithCategoryName);
+                 setFilteredProducts(productsWithCategoryName);
             } catch (e) {
                 setError(e.message);
             }
         };
+
+          const fetchCategories = async () => {
+            try {
+                 const { data, error } = await supabase
+                    .from('categories')
+                    .select('name')
+
+                    if (error) {
+                        setError(error);
+                        return;
+                    }
+
+                const uniqueCategories = data.map(item => item.name);
+                 setCategories(['all', ...uniqueCategories]);
+            } catch (e) {
+                setError(e.message);
+            }
+          };
+
+
         fetchProducts();
+        fetchCategories();
     }, []);
 
-   const addToCart = (product) => {
-        setCart(prevCart => {
-            const existingItem = prevCart.find(item => item.id === product.id);
-            if (existingItem) {
-                return prevCart.map(item => {
-                  if(item.id === product.id){
-                    return { ...item, quantity: item.quantity + 1 };
-                  }
-                  return item;
-                });
-            } else {
-                return [...prevCart, {...product, quantity: 1}];
-            }
-        });
-    };
+   useEffect(() => {
+    if(selectedCategory === 'all'){
+        setFilteredProducts(products);
+    } else {
+         setFilteredProducts(products.filter(product => product.category === selectedCategory));
+    }
+   }, [selectedCategory, products]);
+
 
     const toggleCartModal = () => {
         setIsCartOpen(!isCartOpen);
@@ -58,6 +80,10 @@ function ProductList({ isMobileView }) {
         return cart.reduce((total, item) => total + item.quantity, 0);
     };
 
+    const handleCategoryChange = (e) => {
+        setSelectedCategory(e.target.value);
+    };
+
     if (error) {
         return <p>Error: {error}</p>;
     }
@@ -66,11 +92,22 @@ function ProductList({ isMobileView }) {
         <div className="bg-orange-50 min-h-screen flex flex-col w-full">
             <div className="flex justify-between items-center p-4 bg-red-600 text-white w-full">
                 <h1 className="text-xl font-bold">Comida Mexicana</h1>
-                <div className="relative">
+                <div className="relative flex items-center">
                     <button className="flex items-center" onClick={toggleCartModal}>
                         <ShoppingCartIcon className="h-6 w-6 mr-1 text-gray-800" />
                         <span className="text-gray-800 font-bold">{calculateTotalItems()}</span>
                     </button>
+                     <select
+                        className="ml-4 px-2 py-1 rounded text-gray-800"
+                        value={selectedCategory}
+                        onChange={handleCategoryChange}
+                      >
+                        {categories.map((category) => (
+                          <option key={category} value={category}>
+                            {category === 'all' ? 'Todos' : category}
+                          </option>
+                        ))}
+                      </select>
                 </div>
             </div>
             {isCartOpen && (
@@ -81,13 +118,15 @@ function ProductList({ isMobileView }) {
                        <XMarkIcon className="h-6 w-6" />
                       </button>
                     </div>
-                    <CarritoCompras cartItems={cart} setCartItems={setCart} />
+                    <CarritoCompras />
                 </div>
             )}
-            <div className={`grid ${isMobileView ? 'grid-cols-1' : 'grid-cols-3'} auto-rows-fr gap-4 p-4 flex-grow w-full`}>
-                {products.length === 0 ? <p>No hay productos</p> : (
-                    products.map((product) => (
-                        <ProductCard key={product.id} product={product} onAddToCart={addToCart} />
+            <div className={`grid ${isMobileView ? 'grid-cols-1' : 'grid-cols-3'} grid-auto-rows-[min-content] gap-4 p-4 flex-grow w-full`}>
+                {filteredProducts.length === 0 ? <p>No hay productos</p> : (
+                    filteredProducts.map((product) => (
+                        <div key={product.id}>
+                            <ProductCard product={product}  />
+                        </div>
                     ))
                 )}
             </div>

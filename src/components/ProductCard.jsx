@@ -1,6 +1,14 @@
-import React from 'react';
+import React, { useContext } from 'react';
+import { CartContext } from './CartContext';
 
-function ProductCard({ product, onAddToCart }) {
+function ProductCard({ product}) {
+  const { addToCart } = useContext(CartContext);
+
+   const handleAddToCart = () => {
+      console.log('Producto a añadir:', product);
+      addToCart(product)
+   };
+
   return (
     <div className="bg-white border border-gray-200 rounded-lg shadow-md p-6 m-2 w-96 flex flex-col">
       <img src={product.image_url} alt={product.name} className="w-full h-60 object-cover rounded-t-lg mb-4" />
@@ -11,7 +19,7 @@ function ProductCard({ product, onAddToCart }) {
             <span className="text-green-500 font-bold text-lg">${product.price}</span>
             <button 
               className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded text-sm"
-              onClick={() => onAddToCart(product)}
+                onClick={handleAddToCart}
             >
               Añadir
             </button>

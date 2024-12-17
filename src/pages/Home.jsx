@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import Layout from '../components/Layout';
 import ProductList from '../components/ProductList';
-import { ComputerDesktopIcon, DevicePhoneMobileIcon } from '@heroicons/react/24/solid'; // Import de solid
+import { ComputerDesktopIcon, DevicePhoneMobileIcon } from '@heroicons/react/24/solid';
 
 function Home() {
   const [isMobileView, setIsMobileView] = useState(false);
