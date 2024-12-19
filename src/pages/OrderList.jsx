@@ -52,14 +52,14 @@ function OrderList() {
                                <h3 className="font-bold text-lg mr-2">Orden #{order.id}</h3>
                                <TagIcon className='h-5 w-5'/>
                          </div>
-                         <div className='bg-cyan-300'>
-                         <div className='flex items-center mb-1 bg-cyan-300'>
+                         <div className='bg-blue-100 p-4 rounded-lg'>
+                         <div className='flex items-center mb-1'>
                             <UserIcon className='h-5 w-5 mr-1'/>
-                            <p>Cliente: {order.users.full_name}</p>
+                            <p className="font-bold">Cliente: <span className="italic">{order.users.full_name}</span></p>
                         </div>
-                        <div className='bg-cyan-300'>
-                            <p className="bg-cyan-300 mb-1 mr-2 ml-6">Dirección: {order.users.address}</p>
-                            <p className="text-gray-700 mb-1 mr-2 ml-6">Estado: {order.status}</p>
+                        <div>
+                            <p className="mb-1 ml-6 font-bold">Dirección: <span className="italic">{order.users.address}</span></p>
+                            <p className="text-gray-700 mb-1 ml-6 font-bold">Estado: <span className="italic">{order.status}</span></p>
                         </div>
                         </div>
                          <p className="text-gray-800 font-semibold mt-2">Total: ${order.total_amount}</p>
